@@ -1,20 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
-    public LayerMask grassLayer; // New variable for the Grass Layer
+    public LayerMask grassLayer; 
 
     private bool isMoving;
     private Vector2 input;
 
-   
-    
+   private Animator animator;
 
-    private void Update()
+   private void Awake()
+   {
+       animator=GetComponent<Animator>();
+   }
+
+
+   private void Update()
     {
         if (!isMoving)
         {
@@ -27,7 +34,9 @@ public class PlayerController : MonoBehaviour
             if (input != Vector2.zero)
             {
                 
-
+                animator.SetFloat("moveX", input.x);
+                animator.SetFloat("moveY", input.y);
+                
                 var targetPos = transform.position;
                 targetPos.x += input.x;
                 targetPos.y += input.y;
@@ -39,7 +48,8 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-       
+       animator.SetBool("isMoving", isMoving);
+        
     }
 
     private bool IsWalkable(Vector3 targetPos)
@@ -64,16 +74,16 @@ public class PlayerController : MonoBehaviour
         transform.position = targetPos;
         isMoving = false;
 
-        // Check for encounters after finishing the move
+        //Verificare pentru interactiuni
         CheckForEncounters();
     }
 
     private void CheckForEncounters()
     {
-        // Check if the current position overlaps with the Grass Layer
+        //Verificare pozitie curenta in iarba
         if (Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null)
         {
-            // 10% Chance to trigger an encounter
+            // 10% sanse ca sa intalnesti un Pokemon
             if (Random.Range(1, 101) <= 10)
             {
                 Debug.Log("Encountered a wild Pokemon!");
