@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -103,7 +104,7 @@ NavMeshSettings:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_BuildSettings:
-    serializedVersion: 3
+    serializedVersion: 2
     agentTypeID: 0
     agentRadius: 0.5
     agentHeight: 2
@@ -116,13 +117,12 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualTileSize: 0
     tileSize: 256
-    buildHeightMesh: 0
+    accuratePlacement: 0
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
-<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 --- !u!1 &109837728
@@ -498,8 +498,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413202988}
   m_CullTransparentMesh: 1
-=======
->>>>>>> DENISA
 --- !u!1 &450131121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1627,10 +1625,7 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
-<<<<<<< HEAD
 >>>>>>> Stashed changes
-=======
->>>>>>> DENISA
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1671,17 +1666,9 @@ Camera:
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
-  m_Iso: 200
-  m_ShutterSpeed: 0.005
-  m_Aperture: 16
-  m_FocusDistance: 10
-  m_FocalLength: 50
-  m_BladeCount: 5
-  m_Curvature: {x: 2, y: 11}
-  m_BarrelClipping: 0.25
-  m_Anamorphism: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -1715,23 +1702,18 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
 <<<<<<< Updated upstream
   m_LocalScale: {x: 1, y: 1, z: 1}
-<<<<<<< HEAD
 =======
   m_LocalScale: {x: 2.0566, y: 2.0566, z: 1.0283}
   m_ConstrainProportionsScale: 0
 >>>>>>> Stashed changes
-=======
-  m_ConstrainProportionsScale: 0
->>>>>>> DENISA
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 --- !u!1 &593908851
@@ -2308,8 +2290,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 701828460}
   m_CullTransparentMesh: 1
-=======
->>>>>>> DENISA
 --- !u!1 &816209153
 GameObject:
   m_ObjectHideFlags: 0
@@ -2357,7 +2337,6 @@ Transform:
   - {fileID: 1952410185}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
 --- !u!1 &906942053
 GameObject:
   m_ObjectHideFlags: 0
@@ -2783,8 +2762,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121786851}
   m_CullTransparentMesh: 1
-=======
->>>>>>> DENISA
 --- !u!1 &1218724263
 GameObject:
   m_ObjectHideFlags: 0
@@ -2796,10 +2773,6 @@ GameObject:
   - component: {fileID: 1218724265}
   - component: {fileID: 1218724264}
   - component: {fileID: 1218724266}
-<<<<<<< HEAD
-=======
-  - component: {fileID: 1218724267}
->>>>>>> DENISA
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2893,19 +2866,12 @@ MonoBehaviour:
   grassLayer:
     serializedVersion: 2
     m_Bits: 128
-<<<<<<< HEAD
 --- !u!1 &1223408715
 GameObject:
-=======
---- !u!95 &1218724267
-Animator:
-  serializedVersion: 5
->>>>>>> DENISA
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1223408716}
@@ -3207,22 +3173,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
-=======
-  m_GameObject: {fileID: 1218724263}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a3e4a31174519a048ac72e39d18ed2f6, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
->>>>>>> DENISA
 --- !u!1 &1540908180
 GameObject:
   m_ObjectHideFlags: 0
@@ -10177,7 +10127,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
-<<<<<<< HEAD
 --- !u!1 &1590869945
 GameObject:
   m_ObjectHideFlags: 0
@@ -10714,8 +10663,6 @@ MonoBehaviour:
   _base: {fileID: 11400000, guid: da22956eac036f44d91be3f0f6d0c271, type: 2}
   level: 7
   isPlayerUnit: 1
-=======
->>>>>>> DENISA
 --- !u!1 &1952410184
 GameObject:
   m_ObjectHideFlags: 0
@@ -11232,7 +11179,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
-<<<<<<< HEAD
 --- !u!1 &2061097794
 GameObject:
   m_ObjectHideFlags: 0
@@ -11327,8 +11273,6 @@ MonoBehaviour:
   nameText: {fileID: 593908853}
   levelText: {fileID: 323805477}
   hpBar: {fileID: 1649228676}
-=======
->>>>>>> DENISA
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -11336,9 +11280,6 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 816209155}
   - {fileID: 1218724265}
-<<<<<<< HEAD
   - {fileID: 1425226643}
   - {fileID: 284671753}
 >>>>>>> Stashed changes
-=======
->>>>>>> DENISA
