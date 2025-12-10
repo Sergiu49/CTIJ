@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Move
 {
+
   
     public MoveBase Base { get; set; } // punem getere si setere pt urmatorile implementari
     public int PP { get; set; }
@@ -13,5 +14,6 @@ public class Move
     {
         Base = pBase;
         PP = pBase.PP; 
+
     }
 }

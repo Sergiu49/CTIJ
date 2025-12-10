@@ -24,7 +24,6 @@ public class PokemonBase : ScriptableObject
     [SerializeField] int spDefense;
     [SerializeField] int speed;
 
-
     public string Name {
         get { return name; }
     }
@@ -93,7 +92,6 @@ public class LearnableMove
         get { return level; }
     }
 }
-
 public enum PokemonType
 {
     None,

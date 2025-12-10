@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,24 +13,30 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     private Vector2 input;
 
-   
-    
+   private Animator animator;
 
-    private void Update()
+   private void Awake()
+   {
+       animator=GetComponent<Animator>();
+   }
+
+
+   private void Update()
     {
         if (!isMoving)
         {
-            input.x = Input.GetAxisRaw("Horizontal"); //folisim raw pt a lua valori +1 -1 sau 0 sa ne fie mai simplu
+            input.x = Input.GetAxisRaw("Horizontal");
             input.y = Input.GetAxisRaw("Vertical");
 
-           
-            if (input.x != 0) // nu lasa sa mergi diagonal
-            input.y = 0;
+            // Prevent diagonal movement
+            if (input.x != 0) input.y = 0;
 
-            if (input != Vector2.zero) //verificam daca vectorul input sa schimbat
+            if (input != Vector2.zero)
             {
                 
-
+                animator.SetFloat("moveX", input.x);
+                animator.SetFloat("moveY", input.y);
+                
                 var targetPos = transform.position;
                 targetPos.x += input.x;
                 targetPos.y += input.y;
@@ -40,10 +48,11 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-       
+       animator.SetBool("isMoving", isMoving);
+        
     }
 
-    private bool IsWalkable(Vector3 targetPos) // verificam daca locul un ar ajunge playerul se suprapune cu planul solid objects
+    private bool IsWalkable(Vector3 targetPos)
     {
         if (Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer) != null)
         {
