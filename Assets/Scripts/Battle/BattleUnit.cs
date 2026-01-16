@@ -33,6 +33,7 @@ public class BattleUnit : MonoBehaviour
         else
             GetComponent<Image>().sprite = Pokemon.Base.FrontSprite;
         
+        image.color = originalColor;
         PlayEnterAnimation();
     }
 
