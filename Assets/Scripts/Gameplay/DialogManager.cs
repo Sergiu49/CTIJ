@@ -31,6 +31,7 @@ public class DialogManager : MonoBehaviour
         OnShowDialog?.Invoke();
         
         this.dialog= dialog;
+       
         dialogBox.SetActive(true);
         StartCoroutine(TypeDialog(dialog.Lines[0]));
     }

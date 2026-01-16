@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Dialog : MonoBehaviour
+public class Dialog
 {
     
     [SerializeField] List<string> lines;

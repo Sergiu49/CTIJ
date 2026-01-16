@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState{ FreeRoam, Battle}
+public enum GameState{ FreeRoam, Battle, Dialog}
 public class GameControler : MonoBehaviour
 {
     [SerializeField] PlayerController playerController;
@@ -16,6 +16,22 @@ public class GameControler : MonoBehaviour
     {
         playerController.onEncounter += StartBattle;
         battleSystem.OnBattleOver += EndBattle;
+
+        DialogManager.Instance.OnShowDialog += () =>
+        {
+
+            state = GameState.Dialog;
+
+        };
+        
+        DialogManager.Instance.OnCloseDialog += () =>
+        {
+            
+            if(state == GameState.Dialog)
+            state = GameState.FreeRoam;
+
+        };
+        
     }
 
     private void EndBattle(bool won)
@@ -43,6 +59,12 @@ public class GameControler : MonoBehaviour
         else if (state == GameState.Battle)
         {
             battleSystem.HandleUpdate();
+        }
+        else if (state == GameState.Dialog)
+        {
+            
+            DialogManager.Instance.HandleUpdate();
+            
         }
     }
 }
