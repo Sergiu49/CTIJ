@@ -8,8 +8,9 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed;
     public LayerMask solidObjectsLayer;
-    public LayerMask interactableLayer;
-    public LayerMask grassLayer; 
+    public LayerMask grassLayer;
+
+    public event Action onEncounter;
 
     private bool isMoving;
     private Vector2 input;
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviour
    }
 
 
-   private void Update()
+   public void HandleUpdate()
     {
         if (!isMoving)
         {
@@ -50,32 +51,12 @@ public class PlayerController : MonoBehaviour
         }
         
        animator.SetBool("isMoving", isMoving);
-       
-       if(Input.GetKeyDown(KeyCode.Z))
-            Interact();
-    }
-
-    void Interact()
-    {
-        var faceDir=new Vector3(animator.GetFloat("moveX"),animator.GetFloat("moveY"));
-        var interactPos=transform.position+faceDir;
-        
-        //Debug.DrawLine(transform.position,interactPos,Color.green,0.5f);
-        
-        var collider=Physics2D.OverlapCircle(interactPos, 0.3f, interactableLayer);
-
-        if (collider != null)
-        {
-
-            collider.GetComponent<Interactable>()?.Interact();
-
-        }
         
     }
-   
+
     private bool IsWalkable(Vector3 targetPos)
     {
-        if (Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer | interactableLayer) != null)
+        if (Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer) != null)
         {
             return false;
         }
@@ -108,6 +89,8 @@ public class PlayerController : MonoBehaviour
             if (Random.Range(1, 101) <= 10)
             {
                 Debug.Log("Encountered a wild Pokemon!");
+                animator.SetBool("isMoving", false);
+                onEncounter();
             }
         }
     }

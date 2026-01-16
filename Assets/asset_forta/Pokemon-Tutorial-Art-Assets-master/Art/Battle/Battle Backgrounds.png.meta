@@ -241,13 +241,13 @@ TextureImporter:
       name: Battle Backgrounds_5
       rect:
         serializedVersion: 2
-        x: 520
+        x: 521
         y: 295
         width: 251
-        height: 140
+        height: 141
       alignment: 0
       pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 1, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
