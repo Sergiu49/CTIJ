@@ -16,11 +16,11 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     private Vector2 input;
 
-   private Animator animator;
+   private CharacterAnimation animator;
 
    private void Awake()
    {
-       animator=GetComponent<Animator>();
+       animator=GetComponent<CharacterAnimation>();
    }
 
 
@@ -37,8 +37,8 @@ public class PlayerController : MonoBehaviour
             if (input != Vector2.zero)
             {
                 
-                animator.SetFloat("moveX", input.x);
-                animator.SetFloat("moveY", input.y);
+                animator.MoveX = input.x;
+                animator.MoveY = input.y;
                 
                 var targetPos = transform.position;
                 targetPos.x += input.x;
@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-       animator.SetBool("isMoving", isMoving);
+       animator.IsMoving=isMoving;
         
        if(Input.GetKeyDown(KeyCode.Z))
            Interact();
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
     void Interact()
     {
 
-        var faceDir = new Vector3(animator.GetFloat("moveX"), animator.GetFloat("moveY"));
+        var faceDir = new Vector3(animator.MoveX, animator.MoveY);
         var interactPos = transform.position + faceDir;
 
         var collider = Physics2D.OverlapCircle(interactPos, 0.3f, interactableLayer);
@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
             if (Random.Range(1, 101) <= 10)
             {
                 Debug.Log("Encountered a wild Pokemon!");
-                animator.SetBool("isMoving", false);
+                animator.IsMoving = false;
                 onEncounter();
             }
         }
