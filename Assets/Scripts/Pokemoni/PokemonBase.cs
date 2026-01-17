@@ -120,7 +120,11 @@ public enum Stat
     Defense,
     SpAttack,
     SpDefense,
-    Speed
+    Speed,
+    
+    //nu sunt stats ale pokemonilor dar sunt folositi la boosts
+    Accuracy,
+    Evasion,
 }
 
 public class TypeChart
