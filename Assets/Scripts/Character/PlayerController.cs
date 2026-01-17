@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     
     public event Action onEncounter;
+    public event Action<Collider2D> OnEnterTrainerView;
     
     private Vector2 input;
     
@@ -32,7 +33,7 @@ public class PlayerController : MonoBehaviour
             if (input != Vector2.zero)
             {
                 
-               StartCoroutine(character.Move(input, CheckForEncounters));
+               StartCoroutine(character.Move(input, OnMoveOver));
                 
             }
         }
@@ -57,6 +58,14 @@ public class PlayerController : MonoBehaviour
 
         }
     }
+
+    private void OnMoveOver()
+    {
+        
+        CheckForEncounters();
+        CheckIfInTrainersView();
+        
+    }
     
     private void CheckForEncounters()
     {
@@ -64,7 +73,7 @@ public class PlayerController : MonoBehaviour
         if (Physics2D.OverlapCircle(transform.position, 0.2f, GameLayers.i.GrassLayer) != null)
         {
             // 10% sanse ca sa intalnesti un Pokemon
-            if (Random.Range(1, 101) <= 10)
+            if (UnityEngine.Random.Range(1, 101) <= 10)
             {
                 Debug.Log("Encountered a wild Pokemon!");
                 character.Animator.IsMoving = false;
@@ -72,4 +81,19 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    private void CheckIfInTrainersView()
+    {
+
+        var collider = Physics2D.OverlapCircle(transform.position, 0.2f, GameLayers.i.FovLayer);
+        if (collider != null)
+        {
+            
+            character.Animator.IsMoving = false;
+            OnEnterTrainerView?.Invoke(collider);
+            
+        }
+        
+    }
+    
 }
