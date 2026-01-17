@@ -64,6 +64,7 @@ public class MoveEffects
 {
     [SerializeField] List<StatBoost> boosts;
     [SerializeField] ConditionsID status;
+    [SerializeField] ConditionsID volatileStatus;
     
     public List<StatBoost> Boosts {
         get { return boosts; }
@@ -72,6 +73,11 @@ public class MoveEffects
     public ConditionsID Status
     {
         get { return status; }
+    }
+    
+    public ConditionsID VolatileStatus
+    {
+        get { return volatileStatus; }
     }
 }
 

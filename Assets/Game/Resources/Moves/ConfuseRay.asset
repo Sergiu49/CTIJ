@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f95eabd722ea284e9bb623c6d212c06, type: 3}
-  m_Name: PoisenPowder
+  m_Name: ConfuseRay
   m_EditorClassIdentifier: 
-  _name: Poisen Powder
+  _name: 
   description: 
-  type: 8
+  type: 0
   power: 0
-  accuracy: 100
-  pp: 20
-  category: 2
+  accuracy: 0
+  pp: 0
+  category: 0
   effect:
     boosts: []
-    status: 1
+    status: 0
+    volatileStatus: 0
   target: 0

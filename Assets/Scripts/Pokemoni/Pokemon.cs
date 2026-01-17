@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [System.Serializable]
 public class Pokemon
@@ -21,9 +23,15 @@ public class Pokemon
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> StatsBoosts { get; private set; }
     public Conditions Status {get; private set;}
+    public int StatusTime {get; set;}
+    
+    public Conditions VolatileStatus {get; private set;}
+    public int VolatileStatusTime {get; set;}
+
     
     public Queue<string> StatusChanges { get; private set; } = new Queue<string>();
     public bool HpChanged {get; set;}
+    public event Action OnStatusChange;
 
     // Constructor: Called when creating a new Pokemon (e.g., encountering a wild one)
     public void init()
@@ -50,6 +58,8 @@ public class Pokemon
         HP = MaxHP;
 
         ResetStatsBoosts();
+        Status = null;
+        VolatileStatus = null;
     }
 
 
@@ -62,7 +72,7 @@ public class Pokemon
         Stats.Add(Stat.SpDefense, Mathf.FloorToInt((@base.SpDefense * level) / 100f) + 5);
         Stats.Add(Stat.Speed, Mathf.FloorToInt((@base.Speed * level) / 100f) + 5);
 
-        MaxHP = Mathf.FloorToInt((@base.MaxHP * level) / 100f) + 10;
+        MaxHP = Mathf.FloorToInt((@base.MaxHP * level) / 100f) + 10 + level;
     }
 
     void ResetStatsBoosts()
@@ -121,8 +131,31 @@ public class Pokemon
 
     public void SetStatus(ConditionsID conditionId)
     {
+        if(Status!=null) return;
         Status = ConditionsDB.Conditions[conditionId];
+        Status?.OnStart?.Invoke(this);
         StatusChanges.Enqueue($"{Base.Name}'s {Status.StartMessage}");
+        OnStatusChange?.Invoke();
+    }
+    
+    public void SetVolatileStatus(ConditionsID conditionId)
+    {
+        if (VolatileStatus != null) return;
+
+        VolatileStatus = ConditionsDB.Conditions[conditionId];
+        VolatileStatus?.OnStart?.Invoke(this);
+        StatusChanges.Enqueue($"{Base.Name} {VolatileStatus.StartMessage}");
+    }
+
+    public void CureStatus()
+    {
+        Status = null;
+        OnStatusChange?.Invoke();
+    }
+    
+    public void CureVolatileStatus()
+    {
+        VolatileStatus = null;
     }
 
     public void UpdateHP(int damage)
@@ -203,14 +236,33 @@ public class Pokemon
         return Moves[r];
     }
 
+    public bool OnBeforeMove()
+    {
+        bool canPerformMove = true;
+        if (Status?.OnBeforeMove != null)
+        {
+            if (!Status.OnBeforeMove(this))
+                canPerformMove = false;
+        }
+
+        if (VolatileStatus?.OnBeforeMove != null)
+        {
+            if (!VolatileStatus.OnBeforeMove(this))
+                canPerformMove = false;
+        }
+
+        return canPerformMove;
+    }
     public void OnAfterTurn()
     {
-        if (Status != null)
+        if (Status != null && Status.OnAfterTurn != null)
             Status.OnAfterTurn(this);
+        VolatileStatus?.OnAfterTurn?.Invoke(this);
     }
 
     public void OnBattleOver()
     {
+        VolatileStatus = null;
         ResetStatsBoosts();
     }
 }

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f95eabd722ea284e9bb623c6d212c06, type: 3}
-  m_Name: PoisenPowder
+  m_Name: Sing
   m_EditorClassIdentifier: 
-  _name: Poisen Powder
+  _name: Sing
   description: 
-  type: 8
+  type: 1
   power: 0
   accuracy: 100
   pp: 20
   category: 2
   effect:
     boosts: []
-    status: 1
+    status: 3
   target: 0
