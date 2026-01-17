@@ -17,12 +17,17 @@ public class Pokemon
     // These properties are created in Video #6 to store dynamic battle data
     public int HP { get; set; }
     public List<Move> Moves { get; set; }
+    
+    public Dictionary<Stat, int> Stats { get; private set; }
+    public Dictionary<Stat, int> StatsBoosts { get; private set; }
+    public Conditions Status {get; private set;}
+    
+    public Queue<string> StatusChanges { get; private set; } = new Queue<string>();
+    public bool HpChanged {get; set;}
 
     // Constructor: Called when creating a new Pokemon (e.g., encountering a wild one)
     public void init()
     {
-        // Initialize HP to the maximum calculated HP
-        HP = MaxHP;
 
         // Generate Moves based on Level (Logic from Video #6)
         Moves = new List<Move>();
@@ -38,6 +43,92 @@ public class Pokemon
             if (Moves.Count >= 4)
                 break;
         }
+        
+        CalculateStats();
+        
+        // Initialize HP to the maximum calculated HP
+        HP = MaxHP;
+
+        ResetStatsBoosts();
+    }
+
+
+    void CalculateStats()
+    {
+        Stats = new Dictionary<Stat, int>();
+        Stats.Add(Stat.Attack, Mathf.FloorToInt((@base.Attack * level) / 100f) + 5);
+        Stats.Add(Stat.Defense, Mathf.FloorToInt((@base.Defense * level) / 100f) + 5);
+        Stats.Add(Stat.SpAttack, Mathf.FloorToInt((@base.SpAttack * level) / 100f) + 5);
+        Stats.Add(Stat.SpDefense, Mathf.FloorToInt((@base.SpDefense * level) / 100f) + 5);
+        Stats.Add(Stat.Speed, Mathf.FloorToInt((@base.Speed * level) / 100f) + 5);
+
+        MaxHP = Mathf.FloorToInt((@base.MaxHP * level) / 100f) + 10;
+    }
+
+    void ResetStatsBoosts()
+    {
+        StatsBoosts = new Dictionary<Stat, int>()
+        {
+            { Stat.Attack, 0},
+            { Stat.Defense, 0},
+            { Stat.SpAttack , 0},
+            { Stat.SpDefense , 0},
+            { Stat.Speed, 0},
+        };
+    }
+
+    int GetStat(Stat stat)
+    {
+        int statVal = Stats[stat];
+        
+        //Stats boost
+        int boost=StatsBoosts[stat];
+        var boostsValue = new float[] { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f };
+
+        if (boost >= 0)
+        {
+            statVal = Mathf.FloorToInt(statVal * boostsValue[boost]);
+        }
+        else
+        {
+            statVal = Mathf.FloorToInt(statVal / boostsValue[-boost]);
+        }
+        
+        return statVal;
+    }
+
+    public void ApplyBoosts(List<StatBoost> statBoosts)
+    {
+        foreach (var statBoost in statBoosts)
+        {
+            var stat = statBoost.stat;
+            var boost = statBoost.boost;
+
+            StatsBoosts[stat] = Mathf.Clamp(StatsBoosts[stat] + boost, -6, 6);
+
+            if (boost > 0)
+            {
+                StatusChanges.Enqueue($"{Base.Name}'s {stat} rose!");
+            }
+            else
+            {
+                StatusChanges.Enqueue($"{Base.Name}'s {stat} fell!");
+            }
+            
+            Debug.Log($"{stat} has been boosted to {StatsBoosts[stat]}");
+        }
+    }
+
+    public void SetStatus(ConditionsID conditionId)
+    {
+        Status = ConditionsDB.Conditions[conditionId];
+        StatusChanges.Enqueue($"{Base.Name}'s {Status.StartMessage}");
+    }
+
+    public void UpdateHP(int damage)
+    {
+        HP = Mathf.Clamp(HP - damage, 0, MaxHP);
+        HpChanged = true;
     }
 
     // Properties to expose private fields safely
@@ -52,29 +143,29 @@ public class Pokemon
     // Stat Calculations (Logic from Video #5)
     // Formula: (Base * Level) / 100 + 5
     public int Attack {
-        get { return Mathf.FloorToInt((@base.Attack * level) / 100f) + 5; }
+        get { return GetStat(Stat.Attack); }
     }
 
     public int Defense {
-        get { return Mathf.FloorToInt((@base.Defense * level) / 100f) + 5; }
+        get { return GetStat(Stat.Defense); }
     }
 
-    public int SpAttack {
-        get { return Mathf.FloorToInt((@base.SpAttack * level) / 100f) + 5; }
+    public int SpAttack
+    {
+        get { return GetStat(Stat.SpAttack); }
     }
 
     public int SpDefense {
-        get { return Mathf.FloorToInt((@base.SpDefense * level) / 100f) + 5; }
+        get { return GetStat(Stat.SpDefense); }
     }
 
     public int Speed {
-        get { return Mathf.FloorToInt((@base.Speed * level) / 100f) + 5; }
+        get { return GetStat(Stat.Speed); }
     }
 
     // MaxHP uses a slightly different formula (+10 instead of +5)
-    public int MaxHP {
-        get { return Mathf.FloorToInt((@base.MaxHP * level) / 100f) + 10; }
-    }
+    public int MaxHP { get; private set; }
+    
 
     public DamageDetails TakeDamage(Move move, Pokemon attacker)
     {
@@ -92,8 +183,8 @@ public class Pokemon
             Fainted = false
         };
 
-        float attack = (move.Base.IsSpecial) ? attacker.SpAttack : attacker.Attack;
-        float defense = (move.Base.IsSpecial) ? SpDefense : Defense;
+        float attack = (move.Base.Category == MoveCategory.Special) ? (float)attacker.SpAttack : (float)attacker.Attack;
+        float defense = (move.Base.Category == MoveCategory.Special) ? (float)SpDefense : (float)Defense;
         
         float modifiers = Random.Range(0.85f, 1f) * type * critical;
         float a = (2 * attacker.Level + 10) / 250f;
@@ -101,12 +192,8 @@ public class Pokemon
         int damage = Mathf.FloorToInt(d * modifiers);
         
         
-        HP -= damage;
-        if (HP <= 0)
-        {
-            HP = 0;
-            damageDetails.Fainted = true;
-        }
+        UpdateHP(damage);
+        
         return damageDetails;
     }
 
@@ -114,6 +201,17 @@ public class Pokemon
     {
         int r = Random.Range(0, Moves.Count);
         return Moves[r];
+    }
+
+    public void OnAfterTurn()
+    {
+        if (Status != null)
+            Status.OnAfterTurn(this);
+    }
+
+    public void OnBattleOver()
+    {
+        ResetStatsBoosts();
     }
 }
 

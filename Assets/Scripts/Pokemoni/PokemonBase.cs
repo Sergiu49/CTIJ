@@ -114,6 +114,15 @@ public enum PokemonType
     Dragon
 }
 
+public enum Stat
+{
+    Attack,
+    Defense,
+    SpAttack,
+    SpDefense,
+    Speed
+}
+
 public class TypeChart
 {
     static float[][] chart = 
@@ -135,6 +144,8 @@ public class TypeChart
         /*GHO*/ new float[] { 0f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   0f,   1f,   1f,   2f,   1f  },
         /*DRA*/ new float[] { 1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   1f,   2f  }
     };
+
+    
     
     public static float GetEffectiveness(PokemonType attackType, PokemonType defenseType)
     {
