@@ -7,9 +7,6 @@ using Random = UnityEngine.Random;
 public class PlayerController : MonoBehaviour
 {
     
-    public event Action onEncounter;
-    public event Action<Collider2D> OnEnterTrainerView;
-    
     private Vector2 input;
     
    private Character character;
@@ -61,39 +58,22 @@ public class PlayerController : MonoBehaviour
 
     private void OnMoveOver()
     {
-        
-        CheckForEncounters();
-        CheckIfInTrainersView();
-        
-    }
-    
-    private void CheckForEncounters()
-    {
-        //Verificare pozitie curenta in iarba
-        if (Physics2D.OverlapCircle(transform.position, 0.2f, GameLayers.i.GrassLayer) != null)
-        {
-            // 10% sanse ca sa intalnesti un Pokemon
-            if (UnityEngine.Random.Range(1, 101) <= 10)
-            {
-                Debug.Log("Encountered a wild Pokemon!");
-                character.Animator.IsMoving = false;
-                onEncounter();
-            }
-        }
-    }
 
-    private void CheckIfInTrainersView()
-    {
+       var colliders = Physics2D.OverlapCircleAll(transform.position, 0.2f, GameLayers.i.TriggerableLayers);
 
-        var collider = Physics2D.OverlapCircle(transform.position, 0.2f, GameLayers.i.FovLayer);
-        if (collider != null)
-        {
-            
-            character.Animator.IsMoving = false;
-            OnEnterTrainerView?.Invoke(collider);
-            
-        }
-        
+       foreach (var collider in colliders)
+       {
+           
+           var triggerable = collider.GetComponent<IPlayerTriggerable>();
+           if (triggerable != null)
+           {
+               character.Animator.IsMoving = false; // Oprire animație mers înainte de trigger
+               triggerable.OnPlayerTriggered(this);
+               break;
+           }
+           
+       }
+       
     }
     
 }

@@ -11,25 +11,20 @@ public class GameControler : MonoBehaviour
     [SerializeField] Camera worldCamera;
     
     GameState state;
+    
+    public static GameControler Instance { get; private set; }
+    
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void Start()
     {
-        playerController.onEncounter += StartBattle;
+        
         battleSystem.OnBattleOver += EndBattle;
-
-        playerController.OnEnterTrainerView += (Collider2D trainerCollider) =>
-        {
-            var trainer=trainerCollider.GetComponentInParent<TrainerController>(); //the collider for fov is in child object FOV
-            if (trainer != null)
-            {
-
-                state = GameState.Cutscene;
-                StartCoroutine(trainer.TriggerTrainerBattle(playerController));
-
-            }
-        };
-
-    DialogManager.Instance.OnShowDialog += () =>
+        
+        DialogManager.Instance.OnShowDialog += () =>
         {
 
             state = GameState.Dialog;
@@ -53,13 +48,21 @@ public class GameControler : MonoBehaviour
         worldCamera.gameObject.SetActive(true);
     }
 
-    private void StartBattle()
+    public void StartBattle()
     {
         state = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
         
         battleSystem.StartBattle();
+    }
+
+    public void OnEnterTrainerView(TrainerController trainer)
+    {
+        
+        state = GameState.Cutscene;
+        StartCoroutine(trainer.TriggerTrainerBattle(playerController));
+        
     }
 
     private void Update()
