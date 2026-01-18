@@ -193,6 +193,15 @@ public class Pokemon
         if (Exp > Base.GetExpForLevel(level + 1))
         {
             ++level;
+            
+            int oldMaxHP = MaxHP;
+            CalculateStats();
+
+            int hpGained = MaxHP-oldMaxHP;
+            HP += MaxHP;
+            HP = Mathf.Clamp(HP, 0, MaxHP);
+            HpChanged = true;
+            
             return true;
         }
         

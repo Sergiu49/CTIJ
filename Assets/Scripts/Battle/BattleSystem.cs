@@ -482,6 +482,7 @@ public class BattleSystem : MonoBehaviour
             {
                 playerUnit.Hud.SetLevel();
                 yield return dialogbox.TypeDialog($"{playerUnit.Pokemon.Base.Name} grew to level {playerUnit.Pokemon.Level}");
+                yield return playerUnit.Hud.UpdateHP();
                 
                 //Try to learn new move
                 var newmove = playerUnit.Pokemon.GetLearnableMoveAtCurrentLevel();
