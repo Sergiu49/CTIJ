@@ -12,9 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f95eabd722ea284e9bb623c6d212c06, type: 3}
   m_Name: ember
   m_EditorClassIdentifier: 
-  _name: ember
+  _name: Ember
   description: 
   type: 2
   power: 50
   accuracy: 100
+  alwaysHits: 0
   pp: 35
+  category: 1
+  effect:
+    boosts: []
+    status: 0
+    volatileStatus: 0
+  secondarieses:
+  - boosts: []
+    status: 2
+    volatileStatus: 0
+    chance: 10
+    target: 0
+  target: 0

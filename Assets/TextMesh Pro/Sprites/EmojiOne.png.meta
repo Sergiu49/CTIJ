@@ -241,6 +241,7 @@ TextureImporter:
       name: EmojiOne_7
       rect:
         serializedVersion: 2
+<<<<<<<< HEAD:Assets/TextMesh Pro/Sprites/EmojiOne.png.meta
         x: 384
         y: 256
         width: 128
@@ -248,6 +249,15 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+========
+        x: 521
+        y: 295
+        width: 251
+        height: 141
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 1, z: 0, w: 0}
+>>>>>>>> DENISA:Assets/asset_forta/Pokemon-Tutorial-Art-Assets-master/Art/Battle/Battle Backgrounds.png.meta
       outline: []
       physicsShape: []
       tessellationDetail: 0
