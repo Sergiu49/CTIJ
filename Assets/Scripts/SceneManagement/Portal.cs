@@ -23,7 +23,7 @@ public class Portal : MonoBehaviour, IPlayerTriggerable
     private void Start()
     {
 
-       fader = FindObjectOfType<Fader>();
+        fader = FindObjectOfType<Fader>();
 
     }
     
