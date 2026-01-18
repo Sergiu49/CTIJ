@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState{ FreeRoam, Battle, Dialog, Cutscene, Paused}
+public enum GameState{ FreeRoam, Battle, Dialog, Menu, Cutscene, Paused}
 public class GameControler : MonoBehaviour
 {
     [SerializeField] PlayerController playerController;
@@ -14,11 +14,16 @@ public class GameControler : MonoBehaviour
     GameState stateBeforePause;
     
     public static GameControler Instance { get; private set; }
+
+    MenuController menuController;
     
     private void Awake()
     {
         ConditionsDB.Init();
         Instance = this;
+        
+        menuController = GetComponent<MenuController>();
+        
     }
     
     public void Start()
@@ -40,7 +45,14 @@ public class GameControler : MonoBehaviour
             state = GameState.FreeRoam;
 
         };
-        
+
+        menuController.onBack += () =>
+        {
+            state = GameState.FreeRoam;
+        };
+
+        menuController.onMenuSelected += OnMenuSelected; //normal function
+
     }
 
     public void PauseGame(bool pause)
@@ -104,6 +116,15 @@ public class GameControler : MonoBehaviour
         if (state == GameState.FreeRoam)
         {
             playerController.HandleUpdate();
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                
+                menuController.OpenMenu();
+                state=GameState.Menu;
+                
+            }
+            
         }
         else if (state == GameState.Battle)
         {
@@ -115,5 +136,25 @@ public class GameControler : MonoBehaviour
             DialogManager.Instance.HandleUpdate();
             
         }
+        else if (state == GameState.Menu)
+        {
+
+            menuController.HandleUpdate();
+
+        }
     }
+
+    void OnMenuSelected(int selectedItem)
+    {
+
+        if (selectedItem == 0)
+        {
+            
+            //Pokemon
+        }
+
+        state = GameState.FreeRoam;
+
+    }
+    
 }
