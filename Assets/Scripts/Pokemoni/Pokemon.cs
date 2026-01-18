@@ -198,6 +198,18 @@ public class Pokemon
         
         return false;
     }
+
+    public LearnableMove GetLearnableMoveAtCurrentLevel()
+    {
+        return Base.LearnableMoves.Where(x => x.Level == level).FirstOrDefault();
+    }
+
+    public void Learnmove(LearnableMove moveToLearn)
+    {
+        if (Moves.Count > 4) return;
+        
+        Moves.Add(new Move(moveToLearn.Base));
+    }
     
     // Stat Calculations (Logic from Video #5)
     // Formula: (Base * Level) / 100 + 5
