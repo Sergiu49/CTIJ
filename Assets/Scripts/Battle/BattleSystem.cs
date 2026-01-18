@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public enum BattleState{ Start, ActionSelection, MoveSelection, RunningTurn, Busy, PartyScreen, BattleOver}
+public enum BattleState{ Start, ActionSelection, MoveSelection, RunningTurn, Busy, AboutToUse, PartyScreen, BattleOver}
 public enum BattleAction{Move, SwitchPokemon, UseItem, Run}
 public class BattleSystem : MonoBehaviour
 {
@@ -24,7 +24,8 @@ public class BattleSystem : MonoBehaviour
     int currentAction;
     int currentMove;
     int currentMember;
-    
+    bool AboutToUseChoice = true;
+
     PokemonParty playerParty;
     PokemonParty trainerParty;
     Pokemon wildPokemon;
@@ -127,6 +128,15 @@ public class BattleSystem : MonoBehaviour
         dialogbox.EnableDialogText(false);
         dialogbox.EnableMoveSelector(true);
     }
+    
+    IEnumerator AboutToUse(Pokemon newPokemon)
+    {
+        state = BattleState.Busy;
+        yield return dialogbox.TypeDialog($"{trainer.Name} is about to use {newPokemon.Base.Name}. Do you want to change Pokemon?");
+
+        state = BattleState.AboutToUse;
+        dialogbox.EnableChoiceBox(true);
+    }
 
     IEnumerator ShowDamageDetails(DamageDetails damageDetails)
     {
@@ -153,6 +163,10 @@ public class BattleSystem : MonoBehaviour
         else if (state == BattleState.PartyScreen)
         {
             HandlePartyScreenSelection();
+        }
+        else if (state== BattleState.AboutToUse)
+        {
+            HandleAboutToUse();
         }
     }
 
@@ -195,6 +209,36 @@ public class BattleSystem : MonoBehaviour
             }
         }
     }
+
+    void HandleAboutToUse()
+    {
+        if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+            AboutToUseChoice = !AboutToUseChoice;
+
+        dialogbox.UpdateChoiceBox(AboutToUseChoice);
+        
+        if(Input.GetKeyDown(KeyCode.Z))
+        {
+            dialogbox.EnableChoiceBox(false);
+            if(AboutToUseChoice==true)
+            {
+                //yes
+                prevState = BattleState.AboutToUse;
+                OpenPartyScreen();
+            }
+            else
+            {
+                //no
+                StartCoroutine(SendNextTrainerPokemon());
+            }
+        }
+        else if(Input.GetKeyDown(KeyCode.X))
+        { 
+            dialogbox.EnableChoiceBox(false);
+            StartCoroutine(SendNextTrainerPokemon());
+        }
+    }
+
 
     void OpenPartyScreen()
     {
@@ -248,9 +292,23 @@ public class BattleSystem : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Escape))
         {
+            if (playerUnit.Pokemon.HP <= 0)
+            {   
+                partyScreen.SetMessageText("You have to choose a pokemon to continue");
+                return;
+            }
+
             partyScreen.gameObject.SetActive(false);
-            ActionSelection();
+            
+            if(prevState == BattleState.AboutToUse) 
+            {
+                prevState= null;
+                StartCoroutine(SendNextTrainerPokemon());
+            }
+            else
+                ActionSelection();
         }
+
     }
 
     IEnumerator SwitchPokemon(Pokemon newPokemon)
@@ -266,13 +324,22 @@ public class BattleSystem : MonoBehaviour
         dialogbox.SetMoveNames(newPokemon.Moves);
         yield return dialogbox.TypeDialog($"GO {newPokemon.Base.Name}!");
 
+        if(prevState == null)
+        {
         state = BattleState.RunningTurn;
+        }
+        else if (prevState == BattleState.AboutToUse)
+        {
+            prevState = null;
+            StartCoroutine(SendNextTrainerPokemon());
+        }
     }
 
-    IEnumerator SendNextTrainerPokemon(Pokemon nextPokemon)
+    IEnumerator SendNextTrainerPokemon()
     {
         state =BattleState.Busy;
 
+        var nextPokemon = trainerParty.GetHealtyPokemon();
         enemyUnit.Setup(nextPokemon);
         yield return dialogbox.TypeDialog($"{trainer.Name} send out {nextPokemon.Base.Name}! ");
 
@@ -491,6 +558,7 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(2f);
 
             CheckForBattleOver(sourceUnit);
+            yield return new WaitUntil(() => state == BattleState.RunningTurn);
         }    
     }   
     
@@ -548,7 +616,7 @@ public class BattleSystem : MonoBehaviour
             {
                 var nextPokemon = trainerParty.GetHealtyPokemon();
                 if(nextPokemon != null)
-                    StartCoroutine(SendNextTrainerPokemon(nextPokemon));
+                    StartCoroutine(AboutToUse(nextPokemon));
                 else
                      BattleOver(true);
             }

@@ -46,6 +46,12 @@ public class GameControler : MonoBehaviour
 
     private void EndBattle(bool won)
     {
+        if (trainer != null && won == true)
+        {
+            trainer.BattleLost();
+            trainer = null;
+        }
+
         state = GameState.FreeRoam;
         battleSystem.gameObject.SetActive(false);
         worldCamera.gameObject.SetActive(true);
@@ -62,6 +68,8 @@ public class GameControler : MonoBehaviour
         
         battleSystem.StartBattle(playerParty, wildPokemon);
     }
+    
+    TrainerController trainer;
 
     public void StartTrainerBattle(TrainerController trainer)
     {
@@ -69,6 +77,7 @@ public class GameControler : MonoBehaviour
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
 
+        this.trainer = trainer;
         var playerParty = playerController.GetComponent<PokemonParty>();
         var trainerParty = trainer.GetComponent<PokemonParty>();
         
