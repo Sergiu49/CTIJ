@@ -22,11 +22,15 @@ public class Portal : MonoBehaviour, IPlayerTriggerable
     {
         
         DontDestroyOnLoad(gameObject); //sa nu distrugem portalul cand incarcam scena
+        
+        GameControler.Instance.PauseGame(true);
+        
         yield return SceneManager.LoadSceneAsync(sceneToLoad);
         
-
         var destPortal=FindObjectsOfType<Portal>().First(x => x!=this);
         player.Character.SetPositionAndSnapToTile(destPortal.SpawnPoint.position);
+        
+        GameControler.Instance.PauseGame(false);
         
         Destroy(gameObject);
         
