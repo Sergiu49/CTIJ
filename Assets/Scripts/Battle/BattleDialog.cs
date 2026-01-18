@@ -10,6 +10,7 @@ public class BattleDialog : MonoBehaviour
     [SerializeField] GameObject actionSelector;
     [SerializeField] GameObject moveSelector;
     [SerializeField] GameObject moveDetails;
+    [SerializeField] GameObject choiceBox;
 
     [SerializeField] List<Text> actionTexts;
     [SerializeField] List<Text> moveTexts;
@@ -17,12 +18,11 @@ public class BattleDialog : MonoBehaviour
     [SerializeField] Text ppText;
     [SerializeField] Text typeText;
 
-    private Color highlightColor;
+    [SerializeField] Text yesText;
+    [SerializeField] Text noText;
 
-    private void Start()
-    {
-        highlightColor = GlobalSettings.i.HightlightedColor;
-    }
+
+    [SerializeField] Color highlightColor;
 
     public void SetDialog(string dialog)
     {
@@ -56,6 +56,12 @@ public class BattleDialog : MonoBehaviour
         moveSelector.SetActive(enabled);
         moveDetails.SetActive(enabled);
     }
+    
+    public void EnableChoiceBox(bool enabled)
+    {
+        choiceBox.SetActive(enabled);
+    }
+
 
     public void UpdateActionSelection(int selectedAction)
     {
@@ -91,6 +97,21 @@ public class BattleDialog : MonoBehaviour
         }
     }
     
+    public void UpdateChoiceBox(bool yesSelected)
+    {
+        if (yesSelected)
+        {
+            yesText.color = highlightColor;
+            noText.color = Color.black;
+        }
+
+        else
+        {
+            yesText.color = Color.black;
+            noText.color = highlightColor;
+        }
+    }
+
     public void SetMoveNames(List<Move> moves)
     {
         for (int i=0; i<moveTexts.Count; ++i)
