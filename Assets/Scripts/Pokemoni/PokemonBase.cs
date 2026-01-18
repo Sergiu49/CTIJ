@@ -24,6 +24,22 @@ public class PokemonBase : ScriptableObject
     [SerializeField] int spDefense;
     [SerializeField] int speed;
 
+    [SerializeField] int expYield;
+    [SerializeField] GrowthRate growthRate;
+
+
+    public int GetExpForLevel(int level)
+    {
+        if (growthRate == GrowthRate.Fast)
+            return 4 * (level * level * level) / 5;
+        else if (growthRate == GrowthRate.Medium)
+        {
+            return level * level * level;
+        }
+
+        return -1;
+    }
+
     // Properties to expose the variables safely (The "Cool C# Feature" mentioned at 9:17)
     public string Name {
         get { return name; }
@@ -72,6 +88,16 @@ public class PokemonBase : ScriptableObject
     public int Speed {
         get { return speed; }
     }
+
+    public int ExpYield
+    {
+        get { return expYield; }
+    }
+
+    public GrowthRate GrowthRate
+    {
+        get { return growthRate; }
+    }
     
     [SerializeField] List<LearnableMove> learnableMoves;
 
@@ -112,6 +138,11 @@ public enum PokemonType
     Rock,
     Ghost,
     Dragon
+}
+
+public enum GrowthRate
+{
+    Fast, Medium
 }
 
 public enum Stat
