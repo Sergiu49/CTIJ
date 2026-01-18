@@ -10,24 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f95eabd722ea284e9bb623c6d212c06, type: 3}
-  m_Name: ember
+  m_Name: ThunderWave
   m_EditorClassIdentifier: 
-  _name: Ember
+  _name: Thunder Wave
   description: 
-  type: 2
-  power: 50
+  type: 4
+  power: 0
   accuracy: 100
-  alwaysHits: 0
-  pp: 35
-  category: 1
+  pp: 20
+  category: 2
   effect:
     boosts: []
-    status: 0
-    volatileStatus: 0
-  secondarieses:
-  - boosts: []
-    status: 2
-    volatileStatus: 0
-    chance: 10
-    target: 0
+    status: 4
   target: 0
