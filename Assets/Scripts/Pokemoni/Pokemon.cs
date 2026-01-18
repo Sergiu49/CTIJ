@@ -15,7 +15,13 @@ public class Pokemon
     {
         get{return _base;}
     }
-    public int level { get{return _level;} }
+    public int level
+    {
+        get{return _level;}
+        set => _level = value;
+    }
+
+    public int Exp { get; set; }
 
     // These properties are created in Video #6 to store dynamic battle data
     public int HP { get; set; }
@@ -55,6 +61,8 @@ public class Pokemon
                 break;
         }
         
+        Exp = Base.GetExpForLevel(Level);
+        
         CalculateStats();
         
         // Initialize HP to the maximum calculated HP
@@ -65,7 +73,8 @@ public class Pokemon
         VolatileStatus = null;
     }
 
-
+    
+    
     void CalculateStats()
     {
         Stats = new Dictionary<Stat, int>();
@@ -173,13 +182,26 @@ public class Pokemon
     public PokemonBase Base {
         get { return @base; }
     }
-
+    
     public int Level {
         get { return level; }
     }
 
+
+    public bool CheckForLevelUp()
+    {
+        if (Exp > Base.GetExpForLevel(level + 1))
+        {
+            ++level;
+            return true;
+        }
+        
+        return false;
+    }
+    
     // Stat Calculations (Logic from Video #5)
     // Formula: (Base * Level) / 100 + 5
+    
     public int Attack {
         get { return GetStat(Stat.Attack); }
     }
