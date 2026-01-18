@@ -329,6 +329,7 @@ MonoBehaviour:
   levelText: {fileID: 6622594479525293369}
   statusText: {fileID: 5326080263246991655}
   hpBar: {fileID: 4578946380252335377}
+  expBar: {fileID: 0}
   psnColor: {r: 0.5389373, g: 0, b: 0.8037735, a: 1}
   brnColor: {r: 1, g: 0, b: 0, a: 1}
   slpColor: {r: 1, g: 0.4745098, b: 0.76862746, a: 1}
