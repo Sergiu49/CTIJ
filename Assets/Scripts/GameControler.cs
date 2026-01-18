@@ -13,8 +13,6 @@ public class GameControler : MonoBehaviour
     GameState state;
     GameState stateBeforePause;
     
-
-
     public static GameControler Instance { get; private set; }
     
     private void Awake()
