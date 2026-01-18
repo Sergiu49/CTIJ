@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] string name;
+    [SerializeField] Sprite sprite;
     
     private Vector2 input;
     
@@ -60,7 +62,7 @@ public class PlayerController : MonoBehaviour
     private void OnMoveOver()
     {
 
-       var colliders = Physics2D.OverlapCircleAll(transform.position - new Vector3(0,character.OffsetY), 0.2f, GameLayers.i.TriggerableLayers);
+       var colliders = Physics2D.OverlapCircleAll(transform.position - new Vector3(0,character.OffsetY), 0.05f, GameLayers.i.TriggerableLayers);
 
        foreach (var collider in colliders)
        {
@@ -79,4 +81,11 @@ public class PlayerController : MonoBehaviour
     
     public Character Character => character;
     
+    public string Name{
+        get => name;
+    }
+
+    public Sprite Sprite {
+        get => sprite;
+    }
 }

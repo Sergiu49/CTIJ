@@ -12,6 +12,8 @@ public class GameControler : MonoBehaviour
     
     GameState state;
     
+
+
     public static GameControler Instance { get; private set; }
     
     private void Awake()
@@ -44,6 +46,12 @@ public class GameControler : MonoBehaviour
 
     private void EndBattle(bool won)
     {
+        if (trainer != null && won == true)
+        {
+            trainer.BattleLost();
+            trainer = null;
+        }
+
         state = GameState.FreeRoam;
         battleSystem.gameObject.SetActive(false);
         worldCamera.gameObject.SetActive(true);
@@ -57,8 +65,26 @@ public class GameControler : MonoBehaviour
 
         var playerParty = playerController.GetComponent<PokemonParty>();
         var wildPokemon = FindAnyObjectByType<MapArea>().GetComponent<MapArea>().GetRandomWildPokemon();
+
+        var wildPokemonCopy = new Pokemon(wildPokemon.Base, wildPokemon.Level);
+
+
+        battleSystem.StartBattle(playerParty, wildPokemonCopy);
+    }
+    
+    TrainerController trainer;
+
+    public void StartTrainerBattle(TrainerController trainer)
+    {
+        state = GameState.Battle;
+        battleSystem.gameObject.SetActive(true);
+        worldCamera.gameObject.SetActive(false);
+
+        this.trainer = trainer;
+        var playerParty = playerController.GetComponent<PokemonParty>();
+        var trainerParty = trainer.GetComponent<PokemonParty>();
         
-        battleSystem.StartBattle(playerParty, wildPokemon);
+        battleSystem.StartTrainerBattle(playerParty, trainerParty);
     }
 
     public void OnEnterTrainerView(TrainerController trainer)

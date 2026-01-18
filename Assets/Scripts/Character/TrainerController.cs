@@ -3,13 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrainerController : MonoBehaviour
+public class TrainerController : MonoBehaviour, Interactable
 {
+    [SerializeField] string trainerName; 
+    [SerializeField] Sprite sprite;
     [SerializeField] Dialog dialog;
+    [SerializeField] Dialog dialogAfterBattle;
     [SerializeField] GameObject exclamation;
     [SerializeField] GameObject fov;
     
     Character character;
+
+    bool battleLost = false;
 
     private void Awake()
     {
@@ -21,42 +26,72 @@ public class TrainerController : MonoBehaviour
         SetFovRotation(character.Animator.DefaultDirection);
     }
 
+   
+    private void Update()
+    {
+        character.HandleUpdate();
+    }
+
+    public void Interact(Transform initiator)
+    {
+        character.LookTowards(initiator.position);
+
+       if(!battleLost)
+       {
+            StartCoroutine(DialogManager.Instance.ShowDialog(dialog, () =>
+            {
+                
+                GameControler.Instance.StartTrainerBattle(this);
+            }));
+       }
+       else
+       {
+            StartCoroutine(DialogManager.Instance.ShowDialog(dialogAfterBattle));
+       }
+    }
+
     public IEnumerator TriggerTrainerBattle(PlayerController player)
     {
-        
-        //Showing the exclamation
         exclamation.SetActive(true);
         yield return new WaitForSeconds(0.5f);
         exclamation.SetActive(false);
         
-        //Trainer walks towards player
-        var diff=player.transform.position - transform.position; //the difference between player and trainer position
-        var moveVec=diff - diff.normalized;
-        moveVec=new Vector2(Mathf.Round(moveVec.x),Mathf.Round(moveVec.y)); //always integer
+        var diff = player.transform.position - transform.position;
+        var moveVec = diff - diff.normalized;
+        moveVec = new Vector2(Mathf.Round(moveVec.x), Mathf.Round(moveVec.y));
         
         yield return character.Move(moveVec);
         
-        //Showing dialog
         StartCoroutine(DialogManager.Instance.ShowDialog(dialog, () =>
         {
-            Debug.Log("Start trainer battle");
+           GameControler.Instance.StartTrainerBattle(this);
         }));
+    }
 
+    public void BattleLost()
+    {   
+        battleLost = true;
+        fov.SetActive(false); // FIXED: Removed .GameObject
     }
 
     public void SetFovRotation(FacingDirection dir)
     {
-
         float angle = 0f;
-        if(dir==FacingDirection.Right)
+        if(dir == FacingDirection.Right)
             angle = 90f;
-        else if(dir==FacingDirection.Up)
-            angle= 180f;
-        else if(dir==FacingDirection.Left)
-            angle=270;
+        else if(dir == FacingDirection.Up)
+            angle = 180f;
+        else if(dir == FacingDirection.Left)
+            angle = 270;
         
-        fov.transform.eulerAngles = new Vector3(0f,0f,angle);
-
+        fov.transform.eulerAngles = new Vector3(0f, 0f, angle);
     }
     
+    public string Name {
+        get => trainerName; 
+    }
+
+    public Sprite Sprite {
+        get => sprite;
+    }
 }
