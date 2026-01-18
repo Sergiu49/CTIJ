@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] string name;
+    [SerializeField] Sprite sprite;
     
     private Vector2 input;
     
@@ -79,4 +81,11 @@ public class PlayerController : MonoBehaviour
     
     public Character Character => character;
     
+    public string Name{
+        get => name;
+    }
+
+    public Sprite Sprite {
+        get => sprite;
+    }
 }
