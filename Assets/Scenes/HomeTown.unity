@@ -3816,7 +3816,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 8979799}
   levelText: {fileID: 242618757}
+  statusText: {fileID: 0}
   hpBar: {fileID: 1766275567}
+  psnColor: {r: 0, g: 0, b: 0, a: 0}
+  brnColor: {r: 0, g: 0, b: 0, a: 0}
+  slpColor: {r: 0, g: 0, b: 0, a: 0}
+  parColor: {r: 0, g: 0, b: 0, a: 0}
+  frzColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!224 &564929081
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4083,6 +4089,7 @@ GameObject:
   m_Component:
   - component: {fileID: 816209155}
   - component: {fileID: 816209154}
+  - component: {fileID: 816209156}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -4120,6 +4127,23 @@ Transform:
   - {fileID: 1952410185}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &816209156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816209153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5fdfecfc46fde4e89d673139c30b55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wildPokemons:
+  - _base: {fileID: 11400000, guid: 59aeeaf65d195344bb7dc75448159e75, type: 2}
+    _level: 5
+  - _base: {fileID: 11400000, guid: 59aeeaf65d195344bb7dc75448159e75, type: 2}
+    _level: 7
 --- !u!1 &817987652
 GameObject:
   m_ObjectHideFlags: 0
@@ -4577,9 +4601,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e6c1d30df9766942a7c9882828a5a8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _base: {fileID: 11400000, guid: da22956eac036f44d91be3f0f6d0c271, type: 2}
-  level: 7
   isPlayerUnit: 1
+  hud: {fileID: 0}
 --- !u!1 &868219781
 GameObject:
   m_ObjectHideFlags: 0
@@ -5380,9 +5403,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUnit: {fileID: 855376452}
   enemyUnit: {fileID: 1547227079}
-  playerHud: {fileID: 1595590325}
-  enemyHud: {fileID: 564929080}
   dialogbox: {fileID: 1865720660}
+  partyScreen: {fileID: 0}
 --- !u!1 &1215751041
 GameObject:
   m_ObjectHideFlags: 0
@@ -5477,6 +5499,8 @@ GameObject:
   - component: {fileID: 1218724268}
   - component: {fileID: 1218724270}
   - component: {fileID: 1218724269}
+  - component: {fileID: 1218724271}
+  - component: {fileID: 1218724272}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -5682,6 +5706,37 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1218724271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218724263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 004a9870eb8fcf640b411c4f93b2b9b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pokemons:
+  - _base: {fileID: 11400000, guid: da22956eac036f44d91be3f0f6d0c271, type: 2}
+    _level: 7
+  - _base: {fileID: 11400000, guid: 59aeeaf65d195344bb7dc75448159e75, type: 2}
+    _level: 3
+--- !u!114 &1218724272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218724263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e6c1d30df9766942a7c9882828a5a8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayerUnit: 0
+  hud: {fileID: 0}
 --- !u!1 &1298087970
 GameObject:
   m_ObjectHideFlags: 0
@@ -13043,9 +13098,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e6c1d30df9766942a7c9882828a5a8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _base: {fileID: 11400000, guid: 59aeeaf65d195344bb7dc75448159e75, type: 2}
-  level: 4
   isPlayerUnit: 0
+  hud: {fileID: 0}
 --- !u!1 &1558431829
 GameObject:
   m_ObjectHideFlags: 0
@@ -13308,7 +13362,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 547300895}
   levelText: {fileID: 1977140783}
+  statusText: {fileID: 0}
   hpBar: {fileID: 926618113}
+  psnColor: {r: 0, g: 0, b: 0, a: 0}
+  brnColor: {r: 0, g: 0, b: 0, a: 0}
+  slpColor: {r: 0, g: 0, b: 0, a: 0}
+  parColor: {r: 0, g: 0, b: 0, a: 0}
+  frzColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1766275566
 GameObject:
   m_ObjectHideFlags: 0
