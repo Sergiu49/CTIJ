@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum BattleState{ Start, ActionSelection, MoveSelection, PerformMove, Busy, PartyScreen, BattleOver}
+public enum BattleState{ Start, ActionSelection, MoveSelection, RunningTurn, Busy, PartyScreen, BattleOver}
+public enum BattleAction{Move, SwitchPokemon, UseItem, Run}
 public class BattleSystem : MonoBehaviour
 {
     [SerializeField] BattleUnit playerUnit;
@@ -15,7 +16,8 @@ public class BattleSystem : MonoBehaviour
 
     public event Action<bool> OnBattleOver;
 
-    private BattleState state;
+    BattleState state;
+    BattleState? prevState;
     int currentAction;
     int currentMove;
     int currentMember;
@@ -40,7 +42,7 @@ public class BattleSystem : MonoBehaviour
         dialogbox.SetMoveNames(playerUnit.Pokemon.Moves);
 
         yield return dialogbox.TypeDialog($"A wild {enemyUnit.Pokemon.Base.Name} appeared");
-        ChooseFirstTurn();
+        ActionSelection();
     }
 
    //BattleOver schimba starea la BattleOver, iar functia OnBattleOver este un event care anunta finalul luptei
@@ -123,7 +125,9 @@ public class BattleSystem : MonoBehaviour
             else if (currentAction == 2)
             {
                 //Pokemon
+                prevState = state;
                 OpenPartyScreen();
+                
             }
             else if (currentAction == 3)
             {
@@ -171,8 +175,16 @@ public class BattleSystem : MonoBehaviour
             }
             
             partyScreen.gameObject.SetActive(false);
-            state = BattleState.Busy;
-            StartCoroutine(SwitchPokemon(selectedMember));
+            if (prevState == BattleState.ActionSelection)
+            {
+                prevState = null;
+                StartCoroutine(RunTurns(BattleAction.SwitchPokemon));
+            }
+            else
+            {
+                state = BattleState.Busy;
+                StartCoroutine(SwitchPokemon(selectedMember));
+            }
         }
         else if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Escape))
         {
@@ -183,10 +195,8 @@ public class BattleSystem : MonoBehaviour
 
     IEnumerator SwitchPokemon(Pokemon newPokemon)
     {
-        bool currentPokemonFainted = true;
         if(playerUnit.Pokemon.HP > 0)
         {
-            currentPokemonFainted = false;
             yield return dialogbox.TypeDialog($"Come back {playerUnit.Pokemon.Base.Name}!");
             playerUnit.PlayDeadAnimation();
             yield return new WaitForSeconds(1f);
@@ -196,10 +206,7 @@ public class BattleSystem : MonoBehaviour
         dialogbox.SetMoveNames(newPokemon.Moves);
         yield return dialogbox.TypeDialog($"GO {newPokemon.Base.Name}!");
 
-        if (currentPokemonFainted)
-            ChooseFirstTurn();
-        else
-            StartCoroutine(EnemyMove());
+        state = BattleState.RunningTurn;
     }
 
     void HandleMoveSelection()
@@ -229,9 +236,12 @@ public class BattleSystem : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
+            var move = playerUnit.Pokemon.Moves[currentMove];
+            if(move.PP == 0) return;
+            
             dialogbox.EnableMoveSelector(false);
             dialogbox.EnableDialogText(true);
-            StartCoroutine(PlayerMove());
+            StartCoroutine(RunTurns(BattleAction.Move));
         }
         else if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Escape))
         {
@@ -241,29 +251,66 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    IEnumerator PlayerMove()
+    IEnumerator RunTurns(BattleAction playerAction)
     {
-        state = BattleState.PerformMove;
-        
-        var move = playerUnit.Pokemon.Moves[currentMove];
-        yield return RunMove(playerUnit, enemyUnit,  move);
-       
-        //Daca nu s-a schimbat starea de catre RunMove, atunci incepe EnemyMove
-        if(state == BattleState.PerformMove)
-            StartCoroutine(EnemyMove());
-    }
+        state = BattleState.RunningTurn;
 
-    IEnumerator EnemyMove()
-    {
-        state = BattleState.PerformMove;
+        if (playerAction == BattleAction.Move)
+        {
+            playerUnit.Pokemon.CurrentMove = playerUnit.Pokemon.Moves[currentMove];
+            enemyUnit.Pokemon.CurrentMove = enemyUnit.Pokemon.GetRandomMove();
+            
+            int playerMovePriority = playerUnit.Pokemon.CurrentMove.Base.Priority;
+            int enemyMovePriority = enemyUnit.Pokemon.CurrentMove.Base.Priority;
 
-        var move = enemyUnit.Pokemon.GetRandomMove();
-        yield return RunMove(enemyUnit, playerUnit, move);
-        
-        //Daca nu s-a schimbat starea de catre RunMove, atunci incepe EnemyMove
-        if (state == BattleState.PerformMove)
+            
+            //Check who goes first
+            bool playerGoesFirst = true;
+            if(enemyMovePriority > playerMovePriority)
+                playerGoesFirst = false;
+            else if (enemyMovePriority == playerMovePriority)
+            {
+                playerGoesFirst = playerUnit.Pokemon.Speed >= enemyUnit.Pokemon.Speed;
+            }
+            
+            var firstUnit = (playerGoesFirst) ? playerUnit : enemyUnit;
+            var secondUnit = (playerGoesFirst) ?  enemyUnit  : playerUnit;
+            
+            var secondPokemon = secondUnit.Pokemon;
+
+            //First Turn
+            yield return RunMove(firstUnit, secondUnit, firstUnit.Pokemon.CurrentMove);
+            yield return RunAfterTurn(firstUnit);
+            if (state == BattleState.BattleOver) yield break;
+
+            if (secondPokemon.HP > 0)
+            {
+                //Second Turn
+                yield return RunMove(secondUnit, firstUnit, secondUnit.Pokemon.CurrentMove);
+                yield return RunAfterTurn(secondUnit);
+                if (state == BattleState.BattleOver) yield break;
+            }
+        }
+        else
+        {
+            if (playerAction == BattleAction.SwitchPokemon)
+            {
+                var selectedPokemon = playerParty.Pokemons[currentMember];
+                state = BattleState.Busy;
+                yield return SwitchPokemon(selectedPokemon);
+            }
+            
+            //Enemy turn
+            var enemyMove = enemyUnit.Pokemon.GetRandomMove();
+            yield return RunMove(enemyUnit, playerUnit, enemyMove);
+            yield return RunAfterTurn(enemyUnit);
+            if (state == BattleState.BattleOver) yield break;
+        }
+
+        if (state != BattleState.BattleOver)
+        {
             ActionSelection();
-        
+        }
     }
 
     IEnumerator RunMove(BattleUnit sourceUnit, BattleUnit targetUnit, Move move)
@@ -327,20 +374,6 @@ public class BattleSystem : MonoBehaviour
             yield return dialogbox.TypeDialog($"{sourceUnit.Pokemon.Base.Name}'s move missed");
         }
         
-        
-        //Unele statusuri pot rani pokemonul asa ca trebuie sa verificam daca mai sunt in viata
-        sourceUnit.Pokemon.OnAfterTurn();
-        yield return ShowStatusChanges(sourceUnit.Pokemon);
-        yield return sourceUnit.Hud.UpdateHP();
-        
-        if (sourceUnit.Pokemon.HP <= 0)
-        {
-            yield return dialogbox.TypeDialog($"{sourceUnit.Pokemon.Base.Name} Fainted");
-            sourceUnit.PlayDeadAnimation();
-            yield return new WaitForSeconds(2f);
-
-            CheckForBattleOver(sourceUnit);
-        }
     }
 
     IEnumerator RunMoveEffects(MoveEffects effects, Pokemon source, Pokemon target, MoveTarget  moveTarget)
@@ -369,6 +402,26 @@ public class BattleSystem : MonoBehaviour
         yield return ShowStatusChanges(source);
         yield return ShowStatusChanges(target);
     }
+
+    IEnumerator RunAfterTurn(BattleUnit sourceUnit)
+    {
+        if (state == BattleState.BattleOver) yield break;
+        yield return new WaitUntil(() => state == BattleState.RunningTurn);
+        
+        //Unele statusuri pot rani pokemonul asa ca trebuie sa verificam daca mai sunt in viata
+        sourceUnit.Pokemon.OnAfterTurn();
+        yield return ShowStatusChanges(sourceUnit.Pokemon);
+        yield return sourceUnit.Hud.UpdateHP();
+        
+        if (sourceUnit.Pokemon.HP <= 0)
+        {
+            yield return dialogbox.TypeDialog($"{sourceUnit.Pokemon.Base.Name} Fainted");
+            sourceUnit.PlayDeadAnimation();
+            yield return new WaitForSeconds(2f);
+
+            CheckForBattleOver(sourceUnit);
+        }    
+    }   
     
     bool CheckIfMoveHits(Move move, Pokemon source, Pokemon target)
     {
@@ -419,12 +472,5 @@ public class BattleSystem : MonoBehaviour
             BattleOver(true);
         }
     }
-
-    void ChooseFirstTurn()
-    {
-        if (playerUnit.Pokemon.Speed >= enemyUnit.Pokemon.Speed)
-            ActionSelection();
-        else
-            StartCoroutine(EnemyMove());
-    }
+    
 }
