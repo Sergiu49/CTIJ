@@ -16,14 +16,10 @@ public class GameControler : MonoBehaviour
     
     private void Awake()
     {
+        ConditionsDB.Init();
         Instance = this;
     }
-
-    private void Awake()
-    {
-        ConditionsDB.Init();
-    }
-
+    
     public void Start()
     {
         
