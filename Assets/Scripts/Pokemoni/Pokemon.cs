@@ -11,11 +11,23 @@ public class Pokemon
     [SerializeField]  PokemonBase _base;
     [SerializeField]  int _level;
 
+
+    public Pokemon(PokemonBase pBase, int pLevel)
+{
+    _base = pBase;
+    level = pLevel;
+
+    init();
+}
+     
     public PokemonBase @base
     {
         get{return _base;}
     }
-    public int level { get{return _level;} }
+    public int level { 
+    get { return _level; } 
+    set { _level = value; } 
+}
 
     // These properties are created in Video #6 to store dynamic battle data
     public int HP { get; set; }
@@ -32,7 +44,7 @@ public class Pokemon
     public int VolatileStatusTime {get; set;}
 
     
-    public Queue<string> StatusChanges { get; private set; } = new Queue<string>();
+    public Queue<string> StatusChanges { get; private set; } 
     public bool HpChanged {get; set;}
     public event Action OnStatusChange;
 
@@ -60,6 +72,7 @@ public class Pokemon
         // Initialize HP to the maximum calculated HP
         HP = MaxHP;
 
+        StatusChanges = new Queue<string>();
         ResetStatsBoosts();
         Status = null;
         VolatileStatus = null;

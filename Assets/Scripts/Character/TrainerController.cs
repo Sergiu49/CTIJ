@@ -26,7 +26,7 @@ public class TrainerController : MonoBehaviour, Interactable
         SetFovRotation(character.Animator.DefaultDirection);
     }
 
-    // This was missing! It is required for the walking animation to play.
+   
     private void Update()
     {
         character.HandleUpdate();
@@ -40,7 +40,7 @@ public class TrainerController : MonoBehaviour, Interactable
        {
             StartCoroutine(DialogManager.Instance.ShowDialog(dialog, () =>
             {
-                // Make sure your script is named 'GameController' or 'GameControler' (check your spelling in Unity)
+                
                 GameControler.Instance.StartTrainerBattle(this);
             }));
        }
