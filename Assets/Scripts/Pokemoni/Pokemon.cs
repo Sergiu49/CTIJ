@@ -68,7 +68,8 @@ public class Pokemon
             if (Moves.Count >= 4)
                 break;
         }
-        
+
+        Exp = Base.GetExpForLevel(Level);
         CalculateStats();
         
         // Initialize HP to the maximum calculated HP
@@ -191,6 +192,39 @@ public class Pokemon
 
     public int Level {
         get { return level; }
+    }
+    
+    public bool CheckForLevelUp()
+    {
+        if (Exp > Base.GetExpForLevel(level + 1))
+        {
+            ++level;
+
+            int oldMaxHP = MaxHP;
+            CalculateStats();
+
+            int hpGained = MaxHP-oldMaxHP;
+            HP += MaxHP;
+            HP = Mathf.Clamp(HP, 0, MaxHP);
+            HpChanged = true;
+
+            return true;
+        }
+
+        return false;
+    }
+    
+    //learnable moves
+    public LearnableMove GetLearnableMoveAtCurrentLevel()
+    {
+        return Base.LearnableMoves.Where(x => x.Level == level).FirstOrDefault();
+    }
+
+    public void Learnmove(LearnableMove moveToLearn)
+    {
+        if (Moves.Count > 4) return;
+
+        Moves.Add(new Move(moveToLearn.Base));
     }
 
     // Stat Calculations (Logic from Video #5)

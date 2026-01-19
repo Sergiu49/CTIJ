@@ -1,13 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using DG.Tweening;
 
 
-public enum BattleState{ Start, ActionSelection, MoveSelection, RunningTurn, Busy, AboutToUse, PartyScreen, BattleOver}
+public enum BattleState{ Start, ActionSelection, MoveSelection, RunningTurn, Busy, AboutToUse, PartyScreen, MoveForget, BattleOver}
 public enum BattleAction{Move, SwitchPokemon, UseItem, Run}
 public class BattleSystem : MonoBehaviour
 {
@@ -34,6 +35,8 @@ public class BattleSystem : MonoBehaviour
     PokemonParty playerParty;
     PokemonParty trainerParty;
     Pokemon wildPokemon;
+    
+    MoveBase moveToLearn;
 
     bool isTrainerBattle = false;
     PlayerController player;
@@ -175,6 +178,31 @@ public class BattleSystem : MonoBehaviour
         else if (state== BattleState.AboutToUse)
         {
             HandleAboutToUse();
+        }
+        else if (state == BattleState.MoveForget)
+        {
+            Action<int> onMoveSelected = (moveIndex) =>
+            {
+                _moveSelectionUI.gameObject.SetActive(false);
+                if (moveIndex == 4)
+                {
+                    //nu invata noua miscare
+                    StartCoroutine(dialogbox.TypeDialog($"{playerUnit.Pokemon.Base.Name} did not learn {moveToLearn}"));
+                }
+                else
+                {
+                    //uita miscarea si invata una noua
+                    var selectedMove = playerUnit.Pokemon.Moves[moveIndex].Base;
+
+                    StartCoroutine(dialogbox.TypeDialog($"{playerUnit.Pokemon.Base.Name} forgot {selectedMove.Name} and learned {moveToLearn.Name}"));
+
+                    playerUnit.Pokemon.Moves[moveIndex] = new Move(moveToLearn);
+                }
+
+                moveToLearn = null;
+                state = BattleState.RunningTurn;
+            };
+            _moveSelectionUI.HandleMoveSelection(onMoveSelected);
         }
        
     }
@@ -398,6 +426,17 @@ public class BattleSystem : MonoBehaviour
             ActionSelection();
         }
     }
+    
+    IEnumerator ChooseMoveToForget(Pokemon pokemon, MoveBase newmove)
+    {
+        state = BattleState.Busy;
+        yield return dialogbox.TypeDialog($"Choose a move you want to forget");
+        _moveSelectionUI.gameObject.SetActive(true);
+        _moveSelectionUI.SetMoveData(pokemon.Moves.Select(x => x.Base).ToList(),  newmove);
+        moveToLearn = newmove;
+
+        state = BattleState.MoveForget;
+    }
 
     IEnumerator RunTurns(BattleAction playerAction)
     {
@@ -517,11 +556,7 @@ public class BattleSystem : MonoBehaviour
         
             if (targetUnit.Pokemon.HP <= 0)
             {
-                yield return dialogbox.TypeDialog($"{targetUnit.Pokemon.Base.Name} Fainted");
-                targetUnit.PlayDeadAnimation();
-                yield return new WaitForSeconds(2f);
-
-                CheckForBattleOver(targetUnit);
+                yield return HandlePokemonFainted(targetUnit);
             }
         }
         else
@@ -570,14 +605,67 @@ public class BattleSystem : MonoBehaviour
         
         if (sourceUnit.Pokemon.HP <= 0)
         {
-            yield return dialogbox.TypeDialog($"{sourceUnit.Pokemon.Base.Name} Fainted");
-            sourceUnit.PlayDeadAnimation();
-            yield return new WaitForSeconds(2f);
-
-            CheckForBattleOver(sourceUnit);
+            yield return HandlePokemonFainted(sourceUnit);
             yield return new WaitUntil(() => state == BattleState.RunningTurn);
         }    
     }   
+    
+    IEnumerator HandlePokemonFainted(BattleUnit faintedUnit)
+    {
+        yield return dialogbox.TypeDialog($"{faintedUnit.Pokemon.Base.Name} Fainted");
+        faintedUnit.PlayDeadAnimation();
+        yield return new WaitForSeconds(2f);
+
+        if (!faintedUnit.isPlayerUnint)
+        {
+            //exp gain
+            int expYield = faintedUnit.Pokemon.Base.ExpYield;
+            int enemyLevel = faintedUnit.Pokemon.Level;
+           
+            float trainerBonus = (isTrainerBattle) ? 1.5f : 1f;
+            int expGain = Mathf.FloorToInt(expYield * enemyLevel * trainerBonus) / 7;
+           
+            //int expGain = Mathf.FloorToInt((expYield * enemyLevel) / 7);
+
+            playerUnit.Pokemon.Exp += expGain;
+            yield return dialogbox.TypeDialog($"{playerUnit.Pokemon.Base.Name} gained {expGain} exp");
+            yield return playerUnit.Hud.SetExpSmooth();
+
+            //check lvl up
+            while (playerUnit.Pokemon.CheckForLevelUp())
+            {
+                playerUnit.Hud.SetLevel();
+                yield return dialogbox.TypeDialog($"{playerUnit.Pokemon.Base.Name} grew to level {playerUnit.Pokemon.Level}");
+                yield return playerUnit.Hud.UpdateHP();
+                
+                //Try to learn new move
+                var newmove = playerUnit.Pokemon.GetLearnableMoveAtCurrentLevel();
+                if (newmove != null)
+                {
+                    if (playerUnit.Pokemon.Moves.Count < 4)
+                    {
+                        playerUnit.Pokemon.Learnmove(newmove);
+                        yield return dialogbox.TypeDialog($"{playerUnit.Pokemon.Base.Name} learned {newmove.Base.Name}");
+                        dialogbox.SetMoveNames(playerUnit.Pokemon.Moves);
+                    }
+                    else
+                    {
+                        //forget old move
+                        yield return dialogbox.TypeDialog($"{playerUnit.Pokemon.Base.Name} is trying to learn {newmove.Base.Name}");
+                        yield return dialogbox.TypeDialog($"But it cannot learn more then 4 moves");
+                        yield return ChooseMoveToForget(playerUnit.Pokemon, newmove.Base);
+                        yield return new WaitUntil(() => state != BattleState.MoveForget);
+                        yield return new WaitForSeconds(2f);
+                    }
+                }
+                
+                yield return playerUnit.Hud.SetExpSmooth(true);
+            }
+
+        }
+
+        CheckForBattleOver(faintedUnit);
+    }
     
     bool CheckIfMoveHits(Move move, Pokemon source, Pokemon target)
     {

@@ -1622,8 +1622,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokemons:
-  - _base: {fileID: 11400000, guid: ef619a2bbe211084e8123f33d7f8793b, type: 2}
-    _level: 7
+  - _base: {fileID: 11400000, guid: da22956eac036f44d91be3f0f6d0c271, type: 2}
+    _level: 10
   - _base: {fileID: 11400000, guid: ef619a2bbe211084e8123f33d7f8793b, type: 2}
     _level: 10
 --- !u!1 &3025969663363916840
@@ -2880,7 +2880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUnit: {fileID: 1424268459942906298}
   enemyUnit: {fileID: 6217563411434422443}
-  _moveSelectionUI: {fileID: 0}
+  _moveSelectionUI: {fileID: 7566177180387962019}
   dialogbox: {fileID: 8557203292415976418}
   partyScreen: {fileID: 6142106433733545844}
   playerImage: {fileID: 6781333144785078474}
@@ -4186,6 +4186,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 953522231150861159, guid: 6f4cdec36160144448c5e7c110955cd1, type: 3}
   m_PrefabInstance: {fileID: 5804200302330180108}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7566177180387962019 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4146934971605065391, guid: 6f4cdec36160144448c5e7c110955cd1, type: 3}
+  m_PrefabInstance: {fileID: 5804200302330180108}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10075102dc9179242801549916bcd622, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8930297418261233051
 PrefabInstance:
   m_ObjectHideFlags: 0
