@@ -38,25 +38,25 @@ public class Character : MonoBehaviour
         animator.MoveX = Mathf.Clamp(moveVec.x,-1f,1f);
         animator.MoveY = Mathf.Clamp(moveVec.y,-1f,1f);
                 
-        var targetPos = transform.position;
-        targetPos.x += moveVec.x;
+        var targetPos = transform.position; 
+        targetPos.x += moveVec.x; //calculeaza unde vrea sa ajunga
         targetPos.y += moveVec.y;
 
-        if (!IsPathClear(targetPos))
+        if (!IsPathClear(targetPos)) // verifica daca poate sa ajunga acolo
             yield break;
         
-        IsMoving = true;
+        IsMoving = true; // ii aici ca sa nu lase sa  sa faca alte actiuni
 
-        while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
+        while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon) //verifica daca a ajuns la destintatie folosind o functie fancy
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime); // il muta per se
             yield return null;
         }
 
-        transform.position = targetPos;
-        IsMoving = false;
+        transform.position = targetPos; // il opreste la destinatie
+        IsMoving = false; // scoate conditia de moving si se poate sa se miste 
 
-        OnMoveOver?.Invoke();
+        OnMoveOver?.Invoke(); // verifica daca se intampla ceva gen tall grass, perete
         
     }
     

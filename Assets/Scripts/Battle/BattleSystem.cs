@@ -31,6 +31,7 @@ public class BattleSystem : MonoBehaviour
     int currentMove;
     int currentMember;
     bool AboutToUseChoice = true;
+    int escapeAttempts;
 
     PokemonParty playerParty;
     PokemonParty trainerParty;
@@ -112,7 +113,7 @@ public class BattleSystem : MonoBehaviour
 
         
         
-        
+        escapeAttempts = 0;
         partyScreen.Init();         
         ActionSelection();
     }
@@ -244,6 +245,7 @@ public class BattleSystem : MonoBehaviour
             else if (currentAction == 3)
             {
                 //Run
+                StartCoroutine(RunTurns(BattleAction.Run));
             }
         }
     }
@@ -468,8 +470,7 @@ public class BattleSystem : MonoBehaviour
             //First Turn
             yield return RunMove(firstUnit, secondUnit, firstUnit.Pokemon.CurrentMove);
             yield return RunAfterTurn(firstUnit);
-            if (state == BattleState.BattleOver) yield break;
-
+            if (state == BattleState.BattleOver)
             if (secondPokemon.HP > 0)
             {
                 //Second Turn
@@ -492,7 +493,10 @@ public class BattleSystem : MonoBehaviour
                 yield return ThrowPokeball();
                 if (state == BattleState.BattleOver) yield break;
             }
-
+            else if (playerAction == BattleAction.Run)
+            {
+                yield return TryToEscape();
+            }
 
             //Enemy turn
             var enemyMove = enemyUnit.Pokemon.GetRandomMove();
@@ -807,6 +811,47 @@ public class BattleSystem : MonoBehaviour
          }
 
         return shakeCount;
+    }
+
+    IEnumerator TryToEscape()
+    {
+        state = BattleState.Busy;
+
+        if(isTrainerBattle)
+        {
+             yield return dialogbox.TypeDialog($"You cant run from trainer battles!");
+             state=BattleState.RunningTurn;
+             yield break;
+        }
+
+        ++escapeAttempts;
+
+        int playerSpeed =playerUnit.Pokemon.Speed;
+        int enemySpeed =enemyUnit.Pokemon.Speed;
+
+        if(enemySpeed < playerSpeed)
+        {
+            yield return dialogbox.TypeDialog($"ran away safely");
+            BattleOver(true);
+        }
+        else
+        {
+            float f = (playerSpeed * 128) / enemySpeed + 30 * escapeAttempts;
+            f = f % 256;
+
+        if (UnityEngine.Random.Range(0, 256) < f)
+        {
+            yield return dialogbox.TypeDialog("Ran away safely!");
+            BattleOver(true);
+        }
+        else
+        {
+            yield return dialogbox.TypeDialog("Can't escape!");
+            state = BattleState.RunningTurn;
+        }
+        } 
+
+
     }
 
 
