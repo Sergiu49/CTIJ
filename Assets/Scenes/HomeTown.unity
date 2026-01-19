@@ -3080,6 +3080,12 @@ MonoBehaviour:
     _level: 5
   - _base: {fileID: 11400000, guid: 59aeeaf65d195344bb7dc75448159e75, type: 2}
     _level: 7
+  - _base: {fileID: 11400000, guid: 3ba12c762bec956439f023e98a086bae, type: 2}
+    _level: 5
+  - _base: {fileID: 11400000, guid: 3ba12c762bec956439f023e98a086bae, type: 2}
+    _level: 4
+  - _base: {fileID: 11400000, guid: 15d904321d8fc3c45aa8a7b0fb6e94e5, type: 2}
+    _level: 10
 --- !u!1001 &822389592
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -795,7 +795,7 @@ public class BattleSystem : MonoBehaviour
 
     int TryToCatchPokemon(Pokemon pokemon)
     {
-        float a = (3 * pokemon.MaxHP - 2 * pokemon.HP) * 5000000 * ConditionsDB.GetStatusBonus(pokemon.Status) / (3 * pokemon.MaxHP);
+        float a = (3 * pokemon.MaxHP - 2 * pokemon.HP) * 150 * ConditionsDB.GetStatusBonus(pokemon.Status) / (3 * pokemon.MaxHP);
         if (a >= 255)
         return 4;
 
