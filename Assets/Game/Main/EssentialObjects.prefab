@@ -1623,7 +1623,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokemons:
   - _base: {fileID: 11400000, guid: da22956eac036f44d91be3f0f6d0c271, type: 2}
-    _level: 2
+    _level: 9
 --- !u!1 &3025969663363916840
 GameObject:
   m_ObjectHideFlags: 0

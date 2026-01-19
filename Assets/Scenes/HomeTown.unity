@@ -3077,17 +3077,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wildPokemons:
   - _base: {fileID: 11400000, guid: 59aeeaf65d195344bb7dc75448159e75, type: 2}
-    _level: 5
+    _level: 9
   - _base: {fileID: 11400000, guid: 59aeeaf65d195344bb7dc75448159e75, type: 2}
-    _level: 7
+    _level: 9
   - _base: {fileID: 11400000, guid: 3ba12c762bec956439f023e98a086bae, type: 2}
-    _level: 5
+    _level: 9
   - _base: {fileID: 11400000, guid: 3ba12c762bec956439f023e98a086bae, type: 2}
-    _level: 4
+    _level: 9
   - _base: {fileID: 11400000, guid: 15d904321d8fc3c45aa8a7b0fb6e94e5, type: 2}
-    _level: 10
+    _level: 9
   - _base: {fileID: 11400000, guid: e4b2a674d56c52f4c99ab8c072a4d215, type: 2}
-    _level: 8
+    _level: 9
+  - _base: {fileID: 11400000, guid: 6d96e27ad7f278645a884ee99ea38bf8, type: 2}
+    _level: 9
+  - _base: {fileID: 11400000, guid: 66ce2c5f6655ac04d800149cda0583d0, type: 2}
+    _level: 9
+  - _base: {fileID: 11400000, guid: e4b2a674d56c52f4c99ab8c072a4d215, type: 2}
+    _level: 9
 --- !u!1001 &822389592
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -470,7 +470,7 @@ public class BattleSystem : MonoBehaviour
             //First Turn
             yield return RunMove(firstUnit, secondUnit, firstUnit.Pokemon.CurrentMove);
             yield return RunAfterTurn(firstUnit);
-            if (state == BattleState.BattleOver)
+            if (state == BattleState.BattleOver) yield break;
             if (secondPokemon.HP > 0)
             {
                 //Second Turn
