@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b5418e3863ad9048902b5471f766369, type: 3}
-  m_Name: Pidgey
+  m_Name: Swablu
   m_EditorClassIdentifier: 
-  name_poki: Pidgey
+  name_poki: Swablu
   description: 
-  frontSprite: {fileID: 21300000, guid: b5ca91d5e73c8554db8b25a7013eb3e0, type: 3}
-  backSprite: {fileID: 21300000, guid: 0b3cb7b51d16de9499b950a3258458a0, type: 3}
-  type1: 1
+  frontSprite: {fileID: 21300000, guid: 8d37ba47dd5287445bbf47158e09179c, type: 3}
+  backSprite: {fileID: 21300000, guid: cf672fc07f871a94ca4843c06cd52511, type: 3}
+  type1: 15
   type2: 10
-  maxHP: 40
-  attack: 45
-  defense: 35
-  spAttack: 35
-  spDefense: 35
-  speed: 56
+  maxHP: 45
+  attack: 40
+  defense: 60
+  spAttack: 40
+  spDefense: 75
+  speed: 50
   expYield: 62
-  growthRate: 0
+  growthRate: 1
   learnableMoves:
-  - moveBase: {fileID: 11400000, guid: 9874e2f28ffdd98468e47fd4a9d15f1a, type: 2}
-    level: 1
   - moveBase: {fileID: 11400000, guid: 73b07cd5393ca4a47826a695f559b852, type: 2}
     level: 1
-  - moveBase: {fileID: 11400000, guid: 2a90ba3f663e9a6408e9e12a9a4bdcd1, type: 2}
-    level: 1
+  - moveBase: {fileID: 11400000, guid: 5d9944426f0d99b49a37ad4def2d5f97, type: 2}
+    level: 5
+  - moveBase: {fileID: 11400000, guid: 5e6c73474f1cc39469e1510b5ceb95fb, type: 2}
+    level: 7
   - moveBase: {fileID: 11400000, guid: 5b9762596a2e3b94fb7b647e70c612a3, type: 2}
     level: 3

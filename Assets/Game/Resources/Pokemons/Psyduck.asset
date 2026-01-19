@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b5418e3863ad9048902b5471f766369, type: 3}
-  m_Name: Chansey
+  m_Name: Psyduck
   m_EditorClassIdentifier: 
-  name_poki: Chansey
+  name_poki: 
   description: 
-  frontSprite: {fileID: 21300000, guid: 5aadc8551b00592438ca384a7ffc1804, type: 3}
-  backSprite: {fileID: 21300000, guid: 7604cf4b44b103f4f8465658d23c68e5, type: 3}
-  type1: 0
+  frontSprite: {fileID: 21300000, guid: f497cadfdc7d01d4197e0973afd33039, type: 3}
+  backSprite: {fileID: 21300000, guid: 62c26c3c0b10ae544ae3eac82608cbeb, type: 3}
+  type1: 3
   type2: 0
-  maxHP: 250
-  attack: 5
-  defense: 5
-  spAttack: 35
-  spDefense: 105
-  speed: 50
-  expYield: 395
+  maxHP: 50
+  attack: 52
+  defense: 48
+  spAttack: 65
+  spDefense: 50
+  speed: 55
+  expYield: 62
   growthRate: 0
   learnableMoves:
-  - moveBase: {fileID: 11400000, guid: 1c7ae427b7108fa4bba1602acc30f815, type: 2}
-    level: 1
-  - moveBase: {fileID: 11400000, guid: d6c54c876306df7459d4e6c2f39f70ad, type: 2}
-    level: 10
   - moveBase: {fileID: 11400000, guid: 84859d9d08c152f40b6a0f1663d5ae15, type: 2}
-    level: 5
+    level: 1
+  - moveBase: {fileID: 11400000, guid: 39232bc0948bcb043bc0f42e9147a29a, type: 2}
+    level: 3
   - moveBase: {fileID: 11400000, guid: e87aadd25fa01b941810e2130b2ef099, type: 2}
     level: 1
+  - moveBase: {fileID: 11400000, guid: 0b1ff734d343b0b4694b1317603bdaf9, type: 2}
+    level: 8

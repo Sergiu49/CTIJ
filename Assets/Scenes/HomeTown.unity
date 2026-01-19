@@ -3086,6 +3086,8 @@ MonoBehaviour:
     _level: 4
   - _base: {fileID: 11400000, guid: 15d904321d8fc3c45aa8a7b0fb6e94e5, type: 2}
     _level: 10
+  - _base: {fileID: 11400000, guid: e4b2a674d56c52f4c99ab8c072a4d215, type: 2}
+    _level: 8
 --- !u!1001 &822389592
 PrefabInstance:
   m_ObjectHideFlags: 0
